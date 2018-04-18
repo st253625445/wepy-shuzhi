@@ -9,7 +9,7 @@ image{
 <template>
     <view class="page">
         <view class="page__hd">
-            <view class="page__title">Article</view>
+            <view class="page__title">{{detial.title}}</view>
             <view class="page__desc">文章</view>
         </view>
         <view class="page__bd">
@@ -20,7 +20,7 @@ image{
                     <view class="weui-article__section">
                         <view class="weui-article__h3">1.1 节标题</view>
                         <view class="weui-article__p">
-                            数知小程序demo
+                            {{detial.count}}
                         </view>
                     </view>
                     <view class="weui-article__section">
@@ -32,18 +32,81 @@ image{
                 </view>
             </view>
         </view>
+        <Screen class="fixed-bottom">
+            <button @tap="toDown({{id}})" class="weui-btn" type="primary">下载</button>
+        </Screen>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy';
+    import { service } from '../../config.js'; // URL相关
+    import base from '../../mixins/base';
+    import Screen from '../../components/screen';
+    import User from '../../mixins/user';
 
     export default class detail extends wepy.page {
+        mixins = [base, User]
+        components = {
+            Screen
+        }
         data = {
-            id: '222'
+            id: '222',
+            isCollect: 0,
+            detial: {}
         }
         onLoad(query) {
             this.id = query && +query.id;
+            wx.showLoading();
+        }
+        onShow() {
+            // 初始化页面数据
+            this.initPageData();
+        }
+
+        onPullDownRefresh() {
+            this.initPageData();
+        }
+
+        // 初始化页面数据
+        initPageData() {
+            // 请求文章内容详情
+            this.getDetail();
+        }
+        // 请求文章内容
+        getDetail() {
+            // 构造请求体
+            let request = {
+                url: service.detial,
+                method: 'POST',
+                data: Object.assign({}, {
+                    id: this.id
+                })
+            };
+            // 请求列表
+            wepy
+            .request(request)
+            .then(d => {
+                let detialData = d.data.data;
+                // 状态码正常 & 确认有数据
+                if (d.statusCode === 200 && detialData) {
+                    this.detial = detialData;
+                }
+                this.$apply();
+                wx.hideLoading();
+            })
+            .catch(d => {
+                wx.hideLoading();
+            });
+        }
+        methods = {
+            toDown(id) {
+                // 根据业务接口处理数据
+                console.log(this.id);
+            }
         }
     }
 </script>
+<style lang="less">
+
+</style>

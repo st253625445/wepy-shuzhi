@@ -75,7 +75,7 @@ export default class extends wepy.app {
         ],
         window: {
             navigationBarTextStyle: 'black',
-            navigationBarTitleText: 'WeUI in WePY',
+            navigationBarTitleText: '数知demo',
             navigationBarBackgroundColor: '#f8f8f8',
             backgroundColor: '#f8f8f8'
         },

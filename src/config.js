@@ -5,11 +5,11 @@ var host = 'https://www.easy-mock.com/mock/5ad45eb54cb9e77e30399f22/example';
 
 // 下面的地址配合云端 Demo 工作
 export const service = {
-  // 列表接口 GET
+    // 列表接口 post
     list: `${host}/list`,
 
-  // 筛选页接口 GET
-    tags: `${host}/tags`,
+    // 文章页页接口 post
+    detial: `${host}/detial`,
 
 };
 
