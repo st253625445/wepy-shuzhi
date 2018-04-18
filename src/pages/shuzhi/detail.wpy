@@ -1,0 +1,49 @@
+<style>
+page{
+    background-color: #FFFFFF;
+}
+image{
+    margin: 4px 0;
+}
+</style>
+<template>
+    <view class="page">
+        <view class="page__hd">
+            <view class="page__title">Article</view>
+            <view class="page__desc">文章</view>
+        </view>
+        <view class="page__bd">
+            <view class="weui-article">
+                <view class="weui-article__h1">大标题</view>
+                <view class="weui-article__section">
+                    <view class="weui-article__title">章标题</view>
+                    <view class="weui-article__section">
+                        <view class="weui-article__h3">1.1 节标题</view>
+                        <view class="weui-article__p">
+                            数知小程序demo
+                        </view>
+                    </view>
+                    <view class="weui-article__section">
+                        <view class="weui-article__h3">1.2 节标题</view>
+                        <view class="weui-article__p">
+                            文章ID ： {{id}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class detail extends wepy.page {
+        data = {
+            id: '222'
+        }
+        onLoad(query) {
+            this.id = query && +query.id;
+        }
+    }
+</script>

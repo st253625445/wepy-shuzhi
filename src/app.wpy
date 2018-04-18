@@ -1,6 +1,6 @@
-<style lang="less">
-@import "./style/weui.less";
-page {
+<style lang='less'>
+@import './style/weui.less';
+.page {
   background-color: #f8f8f8;
   font-size: 16px;
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
@@ -36,72 +36,73 @@ page {
 </style>
 
 <script>
-import wepy from "wepy";
-import "wepy-async-function";
+import wepy from 'wepy';
+import 'wepy-async-function';
 
 export default class extends wepy.app {
-  config = {
-    pages: [
-      "pages/shuzhi",
+    config = {
+        pages: [
+            'pages/shuzhi',
+            'pages/shuzhi/detail',
 
-      "pages/index",
-      "pages/example/button",
-      "pages/example/list",
-      "pages/example/input",
-      "pages/example/slider",
-      "pages/example/uploader",
-      "pages/example/article",
-      "pages/example/badge",
-      "pages/example/flex",
-      "pages/example/footer",
-      "pages/example/gallery",
-      "pages/example/grid",
-      "pages/example/icons",
-      "pages/example/loadmore",
-      "pages/example/panel",
-      "pages/example/preview",
-      "pages/example/progress",
-      "pages/example/actionsheet",
-      "pages/example/dialog",
-      "pages/example/msg",
-      "pages/example/msg_fail",
-      "pages/example/msg_success",
-      "pages/example/picker",
-      "pages/example/toast",
-      "pages/example/navbar",
-      "pages/example/tabbar",
-      "pages/example/searchbar"
-    ],
-    window: {
-      navigationBarTextStyle: "black",
-      navigationBarTitleText: "WeUI in WePY",
-      navigationBarBackgroundColor: "#f8f8f8",
-      backgroundColor: "#f8f8f8"
-    },
-    tabBar: {
-      list: [
-        {
-          pagePath: "pages/shuzhi",
-          text: "数知"
+            'pages/index',
+            'pages/example/button',
+            'pages/example/list',
+            'pages/example/input',
+            'pages/example/slider',
+            'pages/example/uploader',
+            'pages/example/article',
+            'pages/example/badge',
+            'pages/example/flex',
+            'pages/example/footer',
+            'pages/example/gallery',
+            'pages/example/grid',
+            'pages/example/icons',
+            'pages/example/loadmore',
+            'pages/example/panel',
+            'pages/example/preview',
+            'pages/example/progress',
+            'pages/example/actionsheet',
+            'pages/example/dialog',
+            'pages/example/msg',
+            'pages/example/msg_fail',
+            'pages/example/msg_success',
+            'pages/example/picker',
+            'pages/example/toast',
+            'pages/example/navbar',
+            'pages/example/tabbar',
+            'pages/example/searchbar'
+        ],
+        window: {
+            navigationBarTextStyle: 'black',
+            navigationBarTitleText: 'WeUI in WePY',
+            navigationBarBackgroundColor: '#f8f8f8',
+            backgroundColor: '#f8f8f8'
         },
-        {
-          pagePath: "pages/index",
-          text: "UI组件"
+        tabBar: {
+            list: [
+                {
+                    pagePath: 'pages/shuzhi',
+                    text: '数知'
+                },
+                {
+                    pagePath: 'pages/index',
+                    text: 'UI组件'
+                }
+            ]
+        },
+        networkTimeout: {
+            request: 10000,
+            connectSocket: 10000,
+            uploadFile: 10000,
+            downloadFile: 10000
         }
-      ]
-    },
-    networkTimeout: {
-      request: 10000,
-      connectSocket: 10000,
-      uploadFile: 10000,
-      downloadFile: 10000
-    }
-  };
+    };
 
-  constructor() {
-    super();
-    this.use("promisify");
-    this.use("requestfix");
-  }
+    constructor() {
+        super();
+        this.use('promisify');
+        this.use('requestfix');
+    }
 }
 </script>

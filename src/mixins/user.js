@@ -1,5 +1,4 @@
 import wepy from 'wepy';
-// import { service } from '../config.js'
 
 export default class userMixin extends wepy.mixin {
     /* ============= 工具方法（mixins没法复写，就再写一遍了） ============= */

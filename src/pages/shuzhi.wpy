@@ -3,129 +3,141 @@
         <view class="page__hd">
             <view class="page__title">数知demo</view>
         </view>
+        <SearchBar></SearchBar>
         <TextList :list.sync="list" :loading.sync="loading" :noMore.sync="noMoreList"></TextList>
     </view>
 </template>
 
 <script>
-import wepy from "wepy";
-import { service } from "../config.js"; // URL相关
-import base from "../mixins/base";
-import http from "../mixins/http";
-import TextList from "../components/list"; // 列表
+import wepy from 'wepy';
+import { service } from '../config.js'; // URL相关
+import base from '../mixins/base';
+import SearchBar from '../components/searchbar'; // 搜索
+import TextList from '../components/list'; // 列表
 
 export default class ShuZhi extends wepy.page {
-  mixins = [base, http];
-  data = {
-    params: {},
-    noMoreList: false,
-    loading: false,
-    list: [],
-    page: 0,
-    size: 5
-  };
-  components = {
-    TextList
-  };
-
-  // 根据搜索条件设置请求参数
-  onLoad(query) {
-    let params = query && query.params;
-    try {
-      params = JSON.parse(params);
-    } catch (e) {
-      params = {};
+    mixins = [base]
+    data = {
+        params: {},
+        noMoreList: false,
+        loading: false,
+        list: [],
+        page: 0,
+        size: 5
     }
-    this.params = params;
-  }
-  onReady() {
-    this.initPageData(this.page);
-  }
-
-  onPullDownRefresh() {
-    this.initPageData();
-  }
-
-  onReachBottom() {
-    setTimeout(() => {
-      this.updateList(this.page);
-    }, 200);
-  }
-
-  methods = {
-    clearSearch() {
-      // 清空参数
-      this.params = {};
-      // 初始化页面
-      this.initPageData();
+    components = {
+        SearchBar,
+        TextList
     }
-  };
+    events = {
+        'listChange': function (params) {
+            this.page = 0;
+            // 设置参数
+            this.params = params;
+            // 初始化页面
+            this.initPageData();
+            console.info(params);
+        }
+    }
+    // 根据搜索条件设置请求参数
+    onLoad(query) {
+        let params = query && query.params;
+        try {
+            params = JSON.parse(params);
+        } catch (e) {
+            params = {};
+        }
+        this.params = params;
+    }
+    onReady() {
+        this.initPageData(this.page);
+    }
 
-  // 初始化页面数据
-  initPageData() {
-    // 初始化参数
-    this.page = 0;
-    this.loading = false;
-    this.noMoreList = false;
-    // 请求推荐列表
-    this.updateList(this.page);
-  }
+    onPullDownRefresh() {
+        this.initPageData();
+    }
 
-  // 更新列表
-  updateList(page) {
-    if (this.loading || this.noMoreList) return;
-    this.loading = true;
-    // 构造请求体
-    let request = {
-      url: service.list,
-      method: "POST",
-      data: Object.assign({}, this.getObject(this.params), {
-        // 默认从0开始为第一页
-        page: page,
-        size: this.size
-      })
+    onReachBottom() {
+        setTimeout(() => {
+            this.updateList(this.page);
+        }, 200);
+    }
+
+    methods = {
+        // clearSearch() {
+        //     // 清空参数
+        //     this.params = {};
+        //     // 初始化页面
+        //     this.initPageData();
+        // }
     };
-    // 请求列表
-    wepy.request(request).then(d => {
-      let listData = d.data.data;
-      // 状态码正常 & 确认有数据
-      if (d.statusCode === 200 && listData) {
-        // 成功回调
-        return setTimeout(() => {
-          // 请求到空列表后就认为没有更多了
-          if (this.isArray(listData) && listData.length === 0) {
-            this.noMoreList = true;
-            return;
-          }
-          if (!this.page || +this.page === 0) {
-            this.list = this.getLists(listData);
-          } else {
-            // 添加到列表中
-            this.list = [...this.list, ...this.getLists(listData)];
-          }
-          // 成功了就增加一页
-          this.page += 1;
-          this.$apply();
-          this.loading = false;
+
+    // 初始化页面数据
+    initPageData() {
+        // 初始化参数
+        this.page = 0;
+        this.loading = false;
+        this.noMoreList = false;
+        // 请求列表
+        this.updateList(this.page);
+    }
+
+    // 更新列表
+    updateList(page) {
+        if (this.loading || this.noMoreList) return;
+        this.loading = true;
+        // 构造请求体
+        let request = {
+            url: service.list,
+            method: 'POST',
+            data: Object.assign({}, this.getObject(this.params), {
+                // 默认从0开始为第一页
+                page: page,
+                size: this.size
+            })
+        };
+        // 请求列表
+        wepy
+        .request(request)
+        .then(d => {
+            let listData = d.data.data;
+            // 状态码正常 & 确认有数据
+            if (d.statusCode === 200 && listData) {
+                // 请求到空列表后就认为没有更多了
+                if (this.isArray(listData) && listData.length === 0) {
+                    this.noMoreList = true;
+                    return;
+                }
+                if (!this.page || +this.page === 0) {
+                    this.list = [];
+                    this.list = this.getLists(listData);
+                } else {
+                // 添加到列表中
+                    this.list = [...this.list, ...this.getLists(listData)];
+                }
+                // 成功了就增加一页
+                this.page += 1;
+                this.loading = false;
+                this.$apply();
+            }
+        })
+        .catch(d => {
+            this.loading = false;
         });
-      }
-    }).catch(d =>{
+    }
 
-    });
-  }
-
-  // 处理列表
-  getLists(data) {
-    const len = this.list.length;
-    return this.getArray(data).map((item, index) => {
-      const xlen = len + index;
-      // 拼接示例数据
-      return {
-        id: xlen,
-        title: item.title,
-        content: `简介: 测试用。${item.title}；${item.title}。`
-      };
-    });
-  }
+    // 处理列表
+    getLists(data) {
+        const len = this.list.length;
+        return this.getArray(data).map((item, index) => {
+            const xlen = len + index;
+            // 拼接示例数据
+            return {
+                id: xlen,
+                title: item.title,
+                content: `简介: 测试用。${item.title}；${item.title}。`
+            };
+        });
+    }
 }
 </script>
